@@ -4,8 +4,15 @@
 
 package it.polito.tdp.corsi;
 
+
 import java.net.URL;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
+
+
+
+import it.polito.tdp.corsi.model.Corso;
 import it.polito.tdp.corsi.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -47,11 +54,81 @@ public class FXMLController {
     @FXML
     void corsiPerPeriodo(ActionEvent event) {
     	
+    	txtRisultato.clear(); //ogni volta che lanciamo cancelliamo il campo del risultato
+    	
+    	String periodoStringa = txtPeriodo.getText(); //acquisisco pd inserito da utente
+    	
+   //VERIFICA pd VALIDO
+    	Integer periodo;
+    	
+    	// Controllo FORMATO e CAMPO NULLO
+    	try {
+    		//provo a convertire in Integer la stringa
+    		periodo = Integer.parseInt(periodoStringa);
+    	}
+    	catch(NumberFormatException ne) {
+    		// se NON POSSO CONVERTIRLO, lancio NumberFormatException
+    		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");	
+    		return;}
+    	
+    	catch(NullPointerException npe) {
+    		//se stringa VUOTA, lancio NullPointerException
+        		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");	
+        		return;
+        	}
+    	
+    	
+    	// Controllo sul RANGE
+    	if(periodo<1 || periodo>2) {
+    		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");
+    		return;
+    	}
+    	
+    	List<Corso> corsi = this.model.getCorsoByPeriodo(periodo);
+    	for(Corso c: corsi) {
+    		txtRisultato.appendText(c.toString()+"\n");
+    	}
     }
 
     @FXML
     void numeroStudenti(ActionEvent event) {
+        txtRisultato.clear(); //ogni volta che lanciamo cancelliamo il campo del risultato
     	
+    	String periodoStringa = txtPeriodo.getText(); //acquisisco pd inserito da utente
+    	
+   //VERIFICA pd VALIDO
+    	Integer periodo;
+    	
+    	// Controllo FORMATO e CAMPO NULLO
+    	try {
+    		//provo a convertire in Integer la stringa
+    		periodo = Integer.parseInt(periodoStringa);
+    	}
+    	catch(NumberFormatException ne) {
+    		// se NON POSSO CONVERTIRLO, lancio NumberFormatException
+    		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");	
+    		return;}
+    	
+    	catch(NullPointerException npe) {
+    		//se stringa VUOTA, lancio NullPointerException
+        		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");	
+        		return;
+        	}
+    	
+    	
+    	// Controllo sul RANGE
+    	if(periodo<1 || periodo>2) {
+    		txtRisultato.setText("Devi inserire un numero (1 o 2) per il periodo didattico");
+    		return;
+    	}
+    	
+    	Map<Corso,Integer> corsiIscrizioni = this.model.getIscrittiByPeriodo(periodo);
+    	for(Corso c: corsiIscrizioni.keySet()) { //per ogni corso c della Map 
+    		txtRisultato.appendText(c.toString()); //stampa il corso
+    		Integer n = corsiIscrizioni.get(c);
+    		txtRisultato.appendText("\t"+n+"\n");  //stampa numero di iscritti
+    	}
+   
     }
 
     @FXML
